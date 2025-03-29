@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Life Tracker</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>My Life Tracker</h1>
+        <div class="date-nav">
+          <button id="prev-btn">이전</button>
+          <input type="date" id="date-picker" />
+          <button id="next-btn">다음</button>
+          <button id="today-btn">오늘</button>
+        </div>
+      </header>
+
+      <div class="main-content">
+        <div class="data-form">
+          <h2>데이터 관리</h2>
+          <div class="file-controls">
+            <input type="file" id="file-upload" accept=".xlsx" />
+            <div class="button-group">
+              <button id="import-btn" class="import-btn">
+                <i class="fas fa-file-import"></i> 데이터 불러오기
+              </button>
+              <button id="reset-btn" class="danger">
+                <i class="fas fa-trash"></i> 초기화
+              </button>
+            </div>
+          </div>
+
+          <div class="d-day-display">
+            <h3>D-day</h3>
+            <div class="d-day-number">D-0</div>
+          </div>
+
+          <div class="daily-score">
+            <h3>오늘의 총점</h3>
+            <div class="score-display">
+              <div class="score-number">0</div>
+              <div class="stars-container">
+                <div class="stars">★★★★★</div>
+              </div>
+            </div>
+            <div class="score-breakdown">
+              <div class="score-item">
+                <span>유산소</span>
+                <div class="score-bar">
+                  <div id="cardio-score-fill" class="score-fill"></div>
+                </div>
+                <span id="cardio-score" class="score-value">0</span>
+              </div>
+              <div class="score-item">
+                <span>근력</span>
+                <div class="score-bar">
+                  <div id="strength-score-fill" class="score-fill"></div>
+                </div>
+                <span id="strength-score" class="score-value">0</span>
+              </div>
+              <div class="score-item">
+                <span>지출</span>
+                <div class="score-bar">
+                  <div id="spending-score-fill" class="score-fill"></div>
+                </div>
+                <span id="spending-score" class="score-value">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-area">
+          <div class="tab-container">
+            <div class="tab-buttons">
+              <button class="tab-button active" id="tab-cardio">유산소</button>
+              <button class="tab-button" id="tab-strength">근력</button>
+              <button class="tab-button" id="tab-spending">지출</button>
+              <button class="tab-button" id="tab-stats">통계</button>
+              <button class="tab-button" id="tab-weekly">주간통계</button>
+              <button class="tab-button" id="tab-monthly">월간통계</button>
+              <button class="tab-button" id="tab-hall">명예의 전당</button>
+            </div>
+
+            <div class="tab-content">
+              <div id="cardio-content" class="tab-pane active">
+                <div class="chart-controls">
+                  <div class="date-range-controls">
+                    <input type="date" id="cardio-start-date" />
+                    <span>~</span>
+                    <input type="date" id="cardio-end-date" />
+                    <button class="apply-btn" onclick="updateCardioChart()">
+                      <i class="fas fa-sync-alt"></i> 반영
+                    </button>
+                  </div>
+                  <div class="cardio-chart-controls">
+                    <button class="chart-type-btn active" data-type="distance">
+                      거리
+                    </button>
+                    <button class="chart-type-btn" data-type="time">
+                      시간
+                    </button>
+                    <button class="chart-type-btn" data-type="pace">
+                      페이스
+                    </button>
+                  </div>
+                </div>
+                <div class="chart-box">
+                  <canvas id="cardioChart"></canvas>
+                </div>
+                <div class="data-table-container">
+                  <div class="table-wrapper">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>날짜</th>
+                          <th>거리 (km)</th>
+                          <th>시간</th>
+                          <th>페이스</th>
+                          <th>야외</th>
+                        </tr>
+                      </thead>
+                      <tbody id="cardio-table-body"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <div id="strength-content" class="tab-pane">
+                <div class="chart-controls">
+                  <div class="date-range-controls">
+                    <input type="date" id="strength-start-date" />
+                    <span>~</span>
+                    <input type="date" id="strength-end-date" />
+                    <button class="apply-btn" onclick="updateStrengthChart()">
+                      <i class="fas fa-sync-alt"></i> 반영
+                    </button>
+                  </div>
+                </div>
+                <div class="chart-box">
+                  <canvas id="strengthChart"></canvas>
+                </div>
+                <div class="data-table-container">
+                  <div class="table-wrapper">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>날짜</th>
+                          <th>시간 (분)</th>
+                        </tr>
+                      </thead>
+                      <tbody id="strength-table-body"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <div id="spending-content" class="tab-pane">
+                <div class="chart-controls">
+                  <div class="date-range-controls">
+                    <input type="date" id="spending-start-date" />
+                    <span>~</span>
+                    <input type="date" id="spending-end-date" />
+                    <button class="apply-btn" onclick="updateSpendingChart()">
+                      <i class="fas fa-sync-alt"></i> 반영
+                    </button>
+                  </div>
+                </div>
+                <div class="chart-box">
+                  <canvas id="spendingChart"></canvas>
+                </div>
+                <div class="data-table-container">
+                  <div class="table-wrapper">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>날짜</th>
+                          <th>금액 (원)</th>
+                        </tr>
+                      </thead>
+                      <tbody id="spending-table-body"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <div id="stats-content" class="tab-pane">
+                <div class="stats-grid">
+                  <div class="stats-card">
+                    <h3>기본 통계</h3>
+                    <div class="chart-metrics">
+                      <div class="metric">
+                        <h3>주간 총 거리</h3>
+                        <p id="weekly-distance">0 km</p>
+                      </div>
+                      <div class="metric">
+                        <h3>주간 총 시간</h3>
+                        <p id="weekly-cardio-time">0 분</p>
+                      </div>
+                      <div class="metric">
+                        <h3>평균 페이스</h3>
+                        <p id="avg-pace">-</p>
+                      </div>
+                      <div class="metric">
+                        <h3>주간 근력 시간</h3>
+                        <p id="weekly-strength-time">0 분</p>
+                      </div>
+                      <div class="metric">
+                        <h3>평균 근력 시간</h3>
+                        <p id="avg-strength-time">0 분/일</p>
+                      </div>
+                      <div class="metric">
+                        <h3>주간 지출</h3>
+                        <p id="weekly-spending">0 원</p>
+                      </div>
+                      <div class="metric">
+                        <h3>평균 지출</h3>
+                        <p id="avg-spending">0 원/일</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="stats-card">
+                    <h3>최고 기록</h3>
+                    <div class="best-records">
+                      <div class="record-item">
+                        <span class="record-label">최고 페이스</span>
+                        <span class="record-value" id="best-pace">-</span>
+                      </div>
+                      <div class="record-item">
+                        <span class="record-label">최장 거리 러닝</span>
+                        <span class="record-value" id="best-distance">-</span>
+                      </div>
+                      <div class="record-item">
+                        <span class="record-label">최장 시간 러닝</span>
+                        <span class="record-value" id="best-time">-</span>
+                      </div>
+                      <div class="record-item">
+                        <span class="record-label">최장 무산소 시간</span>
+                        <span class="record-value" id="best-strength-time"
+                          >-</span
+                        >
+                      </div>
+                      <div class="record-item">
+                        <span class="record-label">최고 총점</span>
+                        <span class="record-value" id="best-total-score"
+                          >-</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="stats-card">
+                    <h3>연속 기록</h3>
+                    <div class="streak-info">
+                      <div class="streak-item">
+                        <span class="streak-label">현재 연속 운동</span>
+                        <span class="streak-value" id="current-streak"
+                          >0일</span
+                        >
+                      </div>
+                      <div class="streak-item">
+                        <span class="streak-label">최장 연속 운동</span>
+                        <span class="streak-value" id="max-streak">0일</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="stats-card">
+                    <h3>운동 캘린더</h3>
+                    <div class="calendar-view"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 주간 통계 탭 -->
+              <div id="weekly-content" class="tab-pane">
+                <div class="weekly-stats-container">
+                  <div class="stats-header">
+                    <h2>주간 통계</h2>
+                    <div class="week-selector">
+                      <button id="prev-week-btn">
+                        <i class="fas fa-chevron-left"></i>
+                      </button>
+                      <span id="current-week-display">2025년 3월 4주</span>
+                      <button id="next-week-btn">
+                        <i class="fas fa-chevron-right"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="stats-grid">
+                    <div class="stats-card">
+                      <h3>주간 요약</h3>
+                      <div class="chart-metrics">
+                        <div class="metric">
+                          <h3>주간 운동 일수</h3>
+                          <p id="weekly-workout-days">0일</p>
+                        </div>
+                        <div class="metric">
+                          <h3>유산소 운동 일수</h3>
+                          <p id="weekly-cardio-days">0일</p>
+                        </div>
+                        <div class="metric">
+                          <h3>근력 운동 일수</h3>
+                          <p id="weekly-strength-days">0일</p>
+                        </div>
+                        <div class="metric">
+                          <h3>총 거리</h3>
+                          <p id="week-total-distance">0 km</p>
+                        </div>
+                        <div class="metric">
+                          <h3>총 유산소 시간</h3>
+                          <p id="week-total-cardio-time">0분</p>
+                        </div>
+                        <div class="metric">
+                          <h3>총 근력 시간</h3>
+                          <p id="week-total-strength-time">0분</p>
+                        </div>
+                        <div class="metric">
+                          <h3>총 지출</h3>
+                          <p id="week-total-spending">0원</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="stats-card">
+                      <h3>주간 최고 기록</h3>
+                      <div class="best-records">
+                        <div class="record-item">
+                          <span class="record-label">최고 페이스</span>
+                          <span class="record-value" id="week-best-pace"
+                            >-</span
+                          >
+                        </div>
+                        <div class="record-item">
+                          <span class="record-label">최장 거리</span>
+                          <span class="record-value" id="week-best-distance"
+                            >-</span
+                          >
+                        </div>
+                        <div class="record-item">
+                          <span class="record-label">최장 시간</span>
+                          <span class="record-value" id="week-best-time"
+                            >-</span
+                          >
+                        </div>
+                        <div class="record-item">
+                          <span class="record-label">최장 근력 시간</span>
+                          <span
+                            class="record-value"
+                            id="week-best-strength-time"
+                            >-</span
+                          >
+                        </div>
+                        <div class="record-item">
+                          <span class="record-label">최고 총점</span>
+                          <span class="record-value" id="week-best-total-score"
+                            >-</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="stats-card weekly-chart-card">
+                      <h3>주간 추이</h3>
+                      <div class="chart-controls">
+                        <div class="chart-type-buttons">
+                          <button
+                            class="chart-type-btn active"
+                            data-type="score"
+                          >
+                            총점
+                          </button>
+                          <button class="chart-type-btn" data-type="cardio">
+                            유산소
+                          </button>
+                          <button class="chart-type-btn" data-type="strength">
+                            근력
+                          </button>
+                          <button class="chart-type-btn" data-type="spending">
+                            지출
+                          </button>
+                        </div>
+                      </div>
+                      <div class="chart-box">
+                        <canvas id="weeklyTrendChart"></canvas>
+                      </div>
+                    </div>
+
+                    <div class="stats-card">
+                      <h3>주간 일별 활동</h3>
+                      <div class="weekly-activity-table">
+                        <div class="table-wrapper">
+                          <table>
+                            <thead>
+                              <tr>
+                                <th>요일</th>
+                                <th>날짜</th>
+                                <th>유산소</th>
+                                <th>근력</th>
+                                <th>지출</th>
+                                <th>총점</th>
+                              </tr>
+                            </thead>
+                            <tbody id="weekly-activity-body"></tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 월간 통계 탭 -->
+              <div id="monthly-content" class="tab-pane">
+                <div class="monthly-stats-container">
+                  <div class="stats-header">
+                    <h2>월간 통계</h2>
+                    <div class="month-selector">
+                      <button id="prev-month-btn">
+                        <i class="fas fa-chevron-left"></i>
+                      </button>
+                      <span id="current-month-display">2025년 3월</span>
+                      <button id="next-month-btn">
+                        <i class="fas fa-chevron-right"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="monthly-calendars">
+                    <h3>월간 캘린더 뷰</h3>
+                    <div class="calendars-grid">
+                      <div class="calendar-wrapper">
+                        <h4>유산소 운동 (km)</h4>
+                        <div id="cardio-calendar" class="month-calendar"></div>
+                      </div>
+                      <div class="calendar-wrapper">
+                        <h4>근력 운동 (분)</h4>
+                        <div
+                          id="strength-calendar"
+                          class="month-calendar"
+                        ></div>
+                      </div>
+                      <div class="calendar-wrapper">
+                        <h4>지출 (원)</h4>
+                        <div
+                          id="spending-calendar"
+                          class="month-calendar"
+                        ></div>
+                      </div>
+                      <div class="calendar-wrapper">
+                        <h4>총점</h4>
+                        <div id="score-calendar" class="month-calendar"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="stats-grid">
+                    <div class="stats-card">
+                      <h3>월간 요약</h3>
+                      <div class="chart-metrics">
+                        <div class="metric">
+                          <h3>월간 운동 일수</h3>
+                          <p id="monthly-workout-days">0일</p>
+                        </div>
+                        <div class="metric">
+                          <h3>총 거리</h3>
+                          <p id="month-total-distance">0 km</p>
+                        </div>
+                        <div class="metric">
+                          <h3>총 유산소 시간</h3>
+                          <p id="month-total-cardio-time">0분</p>
+                        </div>
+                        <div class="metric">
+                          <h3>총 근력 시간</h3>
+                          <p id="month-total-strength-time">0분</p>
+                        </div>
+                        <div class="metric">
+                          <h3>총 지출</h3>
+                          <p id="month-total-spending">0원</p>
+                        </div>
+                        <div class="metric">
+                          <h3>평균 총점</h3>
+                          <p id="month-avg-score">0점</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="stats-card">
+                      <h3>월간 최고 기록</h3>
+                      <div class="best-records">
+                        <div class="record-item">
+                          <span class="record-label">최고 페이스</span>
+                          <span class="record-value" id="month-best-pace"
+                            >-</span
+                          >
+                        </div>
+                        <div class="record-item">
+                          <span class="record-label">최장 거리</span>
+                          <span class="record-value" id="month-best-distance"
+                            >-</span
+                          >
+                        </div>
+                        <div class="record-item">
+                          <span class="record-label">최장 시간</span>
+                          <span class="record-value" id="month-best-time"
+                            >-</span
+                          >
+                        </div>
+                        <div class="record-item">
+                          <span class="record-label">최장 근력 시간</span>
+                          <span
+                            class="record-value"
+                            id="month-best-strength-time"
+                            >-</span
+                          >
+                        </div>
+                        <div class="record-item">
+                          <span class="record-label">최고 총점</span>
+                          <span class="record-value" id="month-best-total-score"
+                            >-</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 명예의 전당 탭 -->
+              <div id="hall-content" class="tab-pane">
+                <div class="hall-of-fame-container">
+                  <h2>명예의 전당</h2>
+                  <p class="hall-description">
+                    전체 기간 동안의 최고 기록을 보여줍니다.
+                  </p>
+
+                  <div class="hall-categories">
+                    <div class="hall-category">
+                      <h3>유산소 부문</h3>
+                      <div class="hall-records">
+                        <div class="hall-record">
+                          <div class="medal gold-medal">
+                            <i class="fas fa-medal"></i>
+                          </div>
+                          <div class="record-details">
+                            <span class="record-name">최장 거리</span>
+                            <span class="record-value" id="hall-best-distance"
+                              >-</span
+                            >
+                            <span
+                              class="record-date"
+                              id="hall-best-distance-date"
+                              >-</span
+                            >
+                          </div>
+                        </div>
+                        <div class="hall-record">
+                          <div class="medal silver-medal">
+                            <i class="fas fa-medal"></i>
+                          </div>
+                          <div class="record-details">
+                            <span class="record-name">최고 페이스</span>
+                            <span class="record-value" id="hall-best-pace"
+                              >-</span
+                            >
+                            <span class="record-date" id="hall-best-pace-date"
+                              >-</span
+                            >
+                          </div>
+                        </div>
+                        <div class="hall-record">
+                          <div class="medal bronze-medal">
+                            <i class="fas fa-medal"></i>
+                          </div>
+                          <div class="record-details">
+                            <span class="record-name">최장 러닝 시간</span>
+                            <span
+                              class="record-value"
+                              id="hall-best-cardio-time"
+                              >-</span
+                            >
+                            <span
+                              class="record-date"
+                              id="hall-best-cardio-time-date"
+                              >-</span
+                            >
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="hall-category">
+                      <h3>근력 부문</h3>
+                      <div class="hall-records">
+                        <div class="hall-record">
+                          <div class="medal gold-medal">
+                            <i class="fas fa-medal"></i>
+                          </div>
+                          <div class="record-details">
+                            <span class="record-name">최장 근력 운동 시간</span>
+                            <span
+                              class="record-value"
+                              id="hall-best-strength-time"
+                              >-</span
+                            >
+                            <span
+                              class="record-date"
+                              id="hall-best-strength-time-date"
+                              >-</span
+                            >
+                          </div>
+                        </div>
+                        <div class="hall-record">
+                          <div class="medal silver-medal">
+                            <i class="fas fa-medal"></i>
+                          </div>
+                          <div class="record-details">
+                            <span class="record-name">연속 근력 운동</span>
+                            <span
+                              class="record-value"
+                              id="hall-best-strength-streak"
+                              >-</span
+                            >
+                            <span
+                              class="record-date"
+                              id="hall-best-strength-streak-date"
+                              >-</span
+                            >
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="hall-category">
+                      <h3>전체 성취</h3>
+                      <div class="hall-records">
+                        <div class="hall-record">
+                          <div class="medal gold-medal">
+                            <i class="fas fa-medal"></i>
+                          </div>
+                          <div class="record-details">
+                            <span class="record-name">최고 일일 총점</span>
+                            <span
+                              class="record-value"
+                              id="hall-best-total-score"
+                              >-</span
+                            >
+                            <span
+                              class="record-date"
+                              id="hall-best-total-score-date"
+                              >-</span
+                            >
+                          </div>
+                        </div>
+                        <div class="hall-record">
+                          <div class="medal silver-medal">
+                            <i class="fas fa-medal"></i>
+                          </div>
+                          <div class="record-details">
+                            <span class="record-name">최장 연속 운동</span>
+                            <span class="record-value" id="hall-best-streak"
+                              >-</span
+                            >
+                            <span class="record-date" id="hall-best-streak-date"
+                              >-</span
+                            >
+                          </div>
+                        </div>
+                        <div class="hall-record">
+                          <div class="medal bronze-medal">
+                            <i class="fas fa-medal"></i>
+                          </div>
+                          <div class="record-details">
+                            <span class="record-name">최고 주간 총점</span>
+                            <span
+                              class="record-value"
+                              id="hall-best-weekly-score"
+                              >-</span
+                            >
+                            <span
+                              class="record-date"
+                              id="hall-best-weekly-score-date"
+                              >-</span
+                            >
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="hall-category">
+                      <h3>특별 성취</h3>
+                      <div class="hall-records achievement-records">
+                        <div class="achievement" id="achievement-100-days">
+                          <div class="achievement-icon">
+                            <i class="fas fa-calendar-check"></i>
+                          </div>
+                          <div class="achievement-details">
+                            <span class="achievement-name">100일 기록</span>
+                            <span class="achievement-description"
+                              >100일 이상 기록 작성</span
+                            >
+                            <span class="achievement-status">미달성</span>
+                          </div>
+                        </div>
+                        <div class="achievement" id="achievement-marathon">
+                          <div class="achievement-icon">
+                            <i class="fas fa-running"></i>
+                          </div>
+                          <div class="achievement-details">
+                            <span class="achievement-name">마라톤 거리</span>
+                            <span class="achievement-description"
+                              >누적 거리 42.195km 달성</span
+                            >
+                            <span class="achievement-status">미달성</span>
+                          </div>
+                        </div>
+                        <div class="achievement" id="achievement-30-streak">
+                          <div class="achievement-icon">
+                            <i class="fas fa-fire"></i>
+                          </div>
+                          <div class="achievement-details">
+                            <span class="achievement-name">30일 연속 운동</span>
+                            <span class="achievement-description"
+                              >30일 연속 운동 달성</span
+                            >
+                            <span class="achievement-status">미달성</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <p>
+          &copy; 2025 마이 라이프 트래커 | 설정: 유산소 3.6km = 80점 | 근력 70분
+          = 80점 | 지출 18000원 = 80점
+        </p>
+      </footer>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
