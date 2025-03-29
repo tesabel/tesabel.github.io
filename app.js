@@ -1,18 +1,20 @@
 // 점수 계산을 위한 설정
 const SCORE_CONFIG = {
   cardio: {
-    targetDistance: 3.6, // km, 80점을 얻는 목표 거리
+    baseScore: 60, // 기본 점수
+    targetDistance: 3.6, // km, 100점을 얻는 목표 거리
     extraPointsPer100m: 1, // 100m당 추가 점수
     weight: 0.2, // 총점수에서 차지하는 비율
   },
   strength: {
+    baseScore: 0, // 기본 점수
     targetMinutes: 70, // 분, 70점을 얻는 목표 시간
     pointsPerMinute: 1, // 1분당 1점
     weight: 0.5, // 총점수에서 차지하는 비율
   },
   spending: {
-    targetAmount: 18000, // 원, 80점을 얻는 목표 지출
-    extraPointsPer1000: 1, // 1000원 덜 쓸 때마다 1점 추가
+    baseScore: 100, // 기본 점수 (0원 지출시)
+    targetAmount: 20000, // 원, 0점이 되는 목표 지출
     weight: 0.3, // 총점수에서 차지하는 비율
   },
 };
@@ -1100,45 +1102,47 @@ function updateCalendarView() {
 
 // 점수 표시 업데이트
 function updateScoreDisplay(data) {
-  // 유산소 점수 계산 (0~100+)
-  let cardioValue = 0;
+  // 유산소 점수 계산 (60~100+)
+  let cardioValue = SCORE_CONFIG.cardio.baseScore;
   if (data.cardioDistance > 0) {
-    // 기본 점수 (3.6km = 80점)
-    cardioValue = Math.min(
-      80,
-      Math.round(
-        (data.cardioDistance / SCORE_CONFIG.cardio.targetDistance) * 80
-      )
-    );
-
-    // 추가 거리에 대한 보너스 점수 (100m당 1점)
-    if (data.cardioDistance > SCORE_CONFIG.cardio.targetDistance) {
+    // 3.6km = 100점
+    if (data.cardioDistance >= SCORE_CONFIG.cardio.targetDistance) {
+      cardioValue = 100;
+      // 추가 거리에 대한 보너스 점수 (100m당 1점)
       const extraDistance =
         data.cardioDistance - SCORE_CONFIG.cardio.targetDistance;
       const extraPoints = Math.floor(extraDistance * 10); // 100m당 1점이므로 1km당 10점
       cardioValue += extraPoints;
+    } else {
+      // 3.6km 미만일 경우 비례 계산
+      cardioValue = Math.round(
+        SCORE_CONFIG.cardio.baseScore +
+          (data.cardioDistance / SCORE_CONFIG.cardio.targetDistance) * 40
+      );
     }
   }
 
   // 근력 점수 계산 (0~70+)
-  let strengthValue = 0;
+  let strengthValue = SCORE_CONFIG.strength.baseScore;
   if (data.strengthTrainingMinutes > 0) {
-    strengthValue = data.strengthTrainingMinutes;
+    strengthValue = Math.min(70, data.strengthTrainingMinutes);
+    // 70분 초과시 1분당 1점 추가
+    if (data.strengthTrainingMinutes > 70) {
+      strengthValue += data.strengthTrainingMinutes - 70;
+    }
   }
 
-  // 지출 점수 계산 (0~100+)
-  let spendingValue = 0;
-  if (data.spendMoney >= 0) {
-    // 18,000원이 80점
-    if (data.spendMoney <= SCORE_CONFIG.spending.targetAmount) {
-      spendingValue = 80;
-      // 1000원 덜 쓸 때마다 1점 추가
-      const savedAmount = SCORE_CONFIG.spending.targetAmount - data.spendMoney;
-      spendingValue += Math.floor(savedAmount / 1000);
+  // 지출 점수 계산 (0~100)
+  let spendingValue = SCORE_CONFIG.spending.baseScore;
+  if (data.spendMoney > 0) {
+    if (data.spendMoney >= SCORE_CONFIG.spending.targetAmount) {
+      spendingValue = 0;
     } else {
-      // 더 많은 지출은 더 낮은 점수
-      const excess = data.spendMoney - SCORE_CONFIG.spending.targetAmount;
-      spendingValue = Math.max(0, 80 - Math.floor(excess / 1000));
+      // 0원~20000원 사이에서 선형적으로 감소
+      spendingValue = Math.round(
+        SCORE_CONFIG.spending.baseScore *
+          (1 - data.spendMoney / SCORE_CONFIG.spending.targetAmount)
+      );
     }
   }
 
@@ -1732,53 +1736,57 @@ function updateWeeklyStats() {
 // 총점 계산 함수 (아이템 기반)
 function calculateTotalScore(item) {
   // 유산소 점수 계산
-  let cardioValue = 0;
+  let cardioValue = SCORE_CONFIG.cardio.baseScore;
   if (item.cardioDistance > 0) {
-    // 기본 점수 (3.6km = 80점)
-    cardioValue = Math.min(
-      80,
-      Math.round(
-        (item.cardioDistance / SCORE_CONFIG.cardio.targetDistance) * 80
-      )
-    );
-
-    // 추가 거리에 대한 보너스 점수 (100m당 1점)
-    if (item.cardioDistance > SCORE_CONFIG.cardio.targetDistance) {
+    // 3.6km = 100점
+    if (item.cardioDistance >= SCORE_CONFIG.cardio.targetDistance) {
+      cardioValue = 100;
+      // 추가 거리에 대한 보너스 점수 (100m당 1점)
       const extraDistance =
         item.cardioDistance - SCORE_CONFIG.cardio.targetDistance;
       const extraPoints = Math.floor(extraDistance * 10); // 100m당 1점이므로 1km당 10점
       cardioValue += extraPoints;
+    } else {
+      // 3.6km 미만일 경우 비례 계산
+      cardioValue = Math.round(
+        SCORE_CONFIG.cardio.baseScore +
+          (item.cardioDistance / SCORE_CONFIG.cardio.targetDistance) * 40
+      );
     }
   }
 
   // 근력 점수 계산 (0~70+)
-  let strengthValue = 0;
+  let strengthValue = SCORE_CONFIG.strength.baseScore;
   if (item.strengthTrainingMinutes > 0) {
-    strengthValue = item.strengthTrainingMinutes;
-  }
-
-  // 지출 점수 계산 (0~100+)
-  let spendingValue = 0;
-  if (item.spendMoney >= 0) {
-    // 18,000원이 80점
-    if (item.spendMoney <= SCORE_CONFIG.spending.targetAmount) {
-      spendingValue = 80;
-      // 1000원 덜 쓸 때마다 1점 추가
-      const savedAmount = SCORE_CONFIG.spending.targetAmount - item.spendMoney;
-      spendingValue += Math.floor(savedAmount / 1000);
-    } else {
-      // 더 많은 지출은 더 낮은 점수
-      const excess = item.spendMoney - SCORE_CONFIG.spending.targetAmount;
-      spendingValue = Math.max(0, 80 - Math.floor(excess / 1000));
+    strengthValue = Math.min(70, item.strengthTrainingMinutes);
+    // 70분 초과시 1분당 1점 추가
+    if (item.strengthTrainingMinutes > 70) {
+      strengthValue += item.strengthTrainingMinutes - 70;
     }
   }
 
-  // 총점 계산
-  return Math.round(
+  // 지출 점수 계산 (0~100)
+  let spendingValue = SCORE_CONFIG.spending.baseScore;
+  if (item.spendMoney > 0) {
+    if (item.spendMoney >= SCORE_CONFIG.spending.targetAmount) {
+      spendingValue = 0;
+    } else {
+      // 0원~20000원 사이에서 선형적으로 감소
+      spendingValue = Math.round(
+        SCORE_CONFIG.spending.baseScore *
+          (1 - item.spendMoney / SCORE_CONFIG.spending.targetAmount)
+      );
+    }
+  }
+
+  // 총점 계산 (0~100+)
+  const totalScore = Math.round(
     cardioValue * SCORE_CONFIG.cardio.weight +
       strengthValue * SCORE_CONFIG.strength.weight +
       spendingValue * SCORE_CONFIG.spending.weight
   );
+
+  return totalScore;
 }
 
 // 주간 활동 테이블 업데이트
