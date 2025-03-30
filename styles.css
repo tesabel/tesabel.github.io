@@ -496,13 +496,13 @@ footer {
     padding: 8px 5px;
     white-space: nowrap;
   }
-  
+
   #tab-results.tab-button {
     background-color: #e3f2fd;
     border: 1px solid #bbdefb;
     border-radius: 4px;
   }
-  
+
   #tab-results.tab-button.active {
     color: #2196f3;
     background-color: #bbdefb;
@@ -805,8 +805,10 @@ footer {
 .calendars-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  gap: 15px;
   margin-top: 15px;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .calendar-wrapper {
@@ -814,6 +816,8 @@ footer {
   border-radius: 8px;
   padding: 15px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .calendar-wrapper h4 {
@@ -829,6 +833,8 @@ footer {
   grid-template-columns: repeat(7, 1fr);
   grid-template-rows: auto repeat(6, 1fr);
   gap: 2px;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .month-calendar .weekday {
@@ -847,7 +853,9 @@ footer {
   border: 1px solid #eee;
   border-radius: 4px;
   padding: 2px;
-  font-size: 0.75em;
+  font-size: 0.7em;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .month-calendar .calendar-cell .date {
@@ -855,8 +863,11 @@ footer {
 }
 
 .month-calendar .calendar-cell .value {
-  font-size: 0.9em;
+  font-size: 0.8em;
   margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .month-calendar .calendar-cell.today {
@@ -1493,67 +1504,67 @@ tr:hover {
     grid-template-columns: 1fr;
     gap: 15px;
   }
-  
+
   .quote-text {
     font-size: 1.1em;
     line-height: 1.4;
   }
-  
+
   .quote-translation {
     font-size: 0.95em;
     line-height: 1.4;
     margin-bottom: 10px;
   }
-  
+
   .quote-author {
     font-size: 0.9em;
   }
-  
+
   .quote-section {
     padding: 15px;
     margin-bottom: 20px;
   }
-  
+
   #tab-results .stats-card {
     padding: 15px;
     flex-direction: row;
     align-items: center;
   }
-  
+
   .card-icon {
     width: 45px;
     height: 45px;
     font-size: 1.2em;
     margin-right: 15px;
   }
-  
+
   .card-content h3 {
     font-size: 0.9em;
     margin-bottom: 4px;
   }
-  
+
   .card-content p {
     font-size: 1.2em;
   }
-  
+
   .motivation-section {
     padding: 15px;
   }
-  
+
   .motivation-section h2 {
     font-size: 1.1em;
     margin-bottom: 15px;
   }
-  
+
   .motivation-metric {
     padding: 12px;
   }
-  
+
   .motivation-metric h3 {
     font-size: 0.9em;
     margin-bottom: 8px;
   }
-  
+
   .motivation-metric p {
     font-size: 1.1em;
   }
@@ -1564,84 +1575,84 @@ tr:hover {
   .results-container {
     padding: 10px;
   }
-  
+
   .tab-content {
     padding: 10px;
   }
-  
+
   .quote-section {
     padding: 15px 10px;
     margin-bottom: 15px;
   }
-  
+
   .quote-text {
     font-size: 1em;
     margin-bottom: 10px;
   }
-  
+
   .quote-translation {
     font-size: 0.9em;
     margin-bottom: 8px;
   }
-  
+
   .quote-author {
     font-size: 0.8em;
     margin-top: 5px;
   }
-  
+
   .stats-cards {
     gap: 10px;
     margin-bottom: 15px;
   }
-  
+
   #tab-results .stats-card {
     padding: 12px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
-  
+
   .card-icon {
     width: 36px;
     height: 36px;
     font-size: 1em;
     margin-right: 10px;
   }
-  
+
   .card-content h3 {
     font-size: 0.8em;
     margin-bottom: 3px;
   }
-  
+
   .card-content p {
     font-size: 1em;
   }
-  
+
   .motivation-section {
     padding: 15px 10px;
   }
-  
+
   .motivation-section h2 {
     font-size: 1em;
     margin-bottom: 12px;
     padding-bottom: 8px;
   }
-  
+
   .motivation-metrics {
     gap: 10px;
   }
-  
+
   .motivation-metric {
     padding: 10px 8px;
   }
-  
+
   .motivation-metric h3 {
     font-size: 0.8em;
     margin-bottom: 6px;
   }
-  
+
   .motivation-metric p {
     font-size: 0.95em;
   }
-  
+
   /* 애니메이션 비활성화 - 모바일에서 성능 향상 */
   #results-content .quote-section,
   #results-content .stats-card,
