@@ -2929,12 +2929,8 @@ function updateMotivationMetrics() {
 
   if (strengthSummary) {
     const strengthDiff = currentWeekStrength - previousWeekStrength;
-    const strengthText =
-      strengthDiff === 0
-        ? `${currentWeekStrength}분`
-        : strengthDiff > 0
-        ? `${currentWeekStrength}분 (+${strengthDiff}분)`
-        : `${currentWeekStrength}분 (${strengthDiff}분)`;
+    const sign = strengthDiff > 0 ? "+" : "";
+    const strengthText = `${currentWeekStrength}분 (${sign}${strengthDiff}분)`;
     strengthSummary.textContent = strengthText;
     strengthSummary.className =
       strengthDiff >= 0 ? "positive-change" : "negative-change";
@@ -2942,12 +2938,13 @@ function updateMotivationMetrics() {
 
   if (spendingSummary) {
     const spendingDiff = currentWeekSpending - previousWeekSpending;
-    const spendingText =
-      spendingDiff === 0
-        ? `${currentWeekSpending.toLocaleString()}원`
-        : spendingDiff > 0
-        ? `${currentWeekSpending.toLocaleString()}원 (+${spendingDiff.toLocaleString()}원)`
-        : `${currentWeekSpending.toLocaleString()}원 (${spendingDiff.toLocaleString()}원)`;
+    const sign = spendingDiff > 0 ? "+" : "";
+
+    // 만원 단위로 변환
+    const currentMan = Math.round(currentWeekSpending / 10000);
+    const diffMan = Math.round(spendingDiff / 10000);
+    const spendingText = `${currentMan}만원 (${sign}${diffMan}만원)`;
+
     spendingSummary.textContent = spendingText;
     spendingSummary.className =
       spendingDiff <= 0 ? "positive-change" : "negative-change";
