@@ -35,6 +35,17 @@ const resetBtn = document.getElementById("reset-btn");
 const tabButtons = document.querySelectorAll(".tab-button");
 const tabPanes = document.querySelectorAll(".tab-pane");
 
+// 결과 탭 요소
+const quoteText = document.querySelector(".quote-text");
+const quoteTranslation = document.querySelector(".quote-translation");
+const quoteAuthor = document.querySelector(".quote-author");
+const lastUpdateDate = document.getElementById("last-update-date");
+const runningStreak = document.getElementById("running-streak");
+const gymStreak = document.getElementById("gym-streak");
+const weightChange = document.getElementById("weight-change");
+const strengthSummary = document.getElementById("strength-summary");
+const spendingSummary = document.getElementById("spending-summary");
+
 // 주간 통계 요소
 const prevWeekBtn = document.getElementById("prev-week-btn");
 const nextWeekBtn = document.getElementById("next-week-btn");
@@ -97,6 +108,9 @@ document.addEventListener("DOMContentLoaded", function () {
   todayBtn.addEventListener("click", goToToday);
   importBtn.addEventListener("click", importData);
   resetBtn.addEventListener("click", resetData);
+  
+  // 명언 로드
+  loadDailyQuote();
 
   // 날짜 범위 입력 이벤트 리스너
   document
@@ -173,6 +187,8 @@ document.addEventListener("DOMContentLoaded", function () {
         updateMonthlyStats();
       } else if (button.id === "tab-hall") {
         updateHallOfFame();
+      } else if (button.id === "tab-results") {
+        updateResultsTab();
       }
     });
   });
@@ -246,6 +262,8 @@ function init() {
   updateView();
   updateAllTables();
   updateStatistics();
+  loadDailyQuote();
+  updateResultsTab();
 
   // 주간 및 월간 날짜 초기화
   setCurrentWeek();
@@ -363,6 +381,7 @@ function updateView() {
   renderSpendingTable();
   updateAllCharts();
   updateStatistics();
+  updateResultsTab();
 }
 
 // 날짜 간 이동
@@ -2675,4 +2694,195 @@ function handleFileImport(event) {
     }
   };
   reader.readAsText(file);
+}
+
+// 명언 로드 함수
+function loadDailyQuote() {
+  const quote = getDailyQuote();
+  if (quoteText && quoteTranslation && quoteAuthor) {
+    quoteText.textContent = `"${quote.text}"`;
+    quoteTranslation.textContent = quote.translation;
+    quoteAuthor.textContent = `- ${quote.author}`;
+  }
+}
+
+// 결과 탭 업데이트 함수
+function updateResultsTab() {
+  // 명언 새로고침
+  loadDailyQuote();
+  
+  if (!lifeData || lifeData.length === 0) return;
+  
+  // 마지막 업데이트 날짜 계산 
+  const sortedData = [...lifeData].sort((a, b) => {
+    const dateA = parseDate(a.date);
+    const dateB = parseDate(b.date);
+    return dateB - dateA; // 내림차순 정렬
+  });
+  
+  // 데이터가 있는 마지막 날짜 찾기
+  const lastUpdateItem = sortedData.find(item => 
+    item.cardioDistance > 0 || 
+    item.cardioMinute > 0 || 
+    item.strengthTrainingMinutes > 0 || 
+    item.spendMoney > 0
+  );
+  
+  if (lastUpdateItem && lastUpdateDate) {
+    const lastDate = parseDate(lastUpdateItem.date);
+    lastUpdateDate.textContent = formatDateKorean(lastDate);
+  }
+  
+  // 연속 러닝 일수
+  calculateRunningStreak();
+  
+  // 연속 헬스 일수
+  calculateGymStreak();
+  
+  // 주간 체중 변화, 근력 및 지출 현황
+  updateMotivationMetrics();
+}
+
+// 연속 러닝 일수 계산
+function calculateRunningStreak() {
+  if (!lifeData || lifeData.length === 0 || !runningStreak) return;
+  
+  // 날짜순으로 정렬
+  const sortedData = [...lifeData].sort((a, b) => {
+    const dateA = parseDate(a.date);
+    const dateB = parseDate(b.date);
+    return dateB - dateA; // 내림차순 정렬 (최신 날짜부터)
+  });
+  
+  let streak = 0;
+  let currentDate = new Date();
+  currentDate.setHours(0, 0, 0, 0);
+  
+  // 데이터를 순회하며 연속된 러닝 일수 계산
+  for (let i = 0; i < sortedData.length; i++) {
+    const itemDate = parseDate(sortedData[i].date);
+    itemDate.setHours(0, 0, 0, 0);
+    
+    // 오늘의 날짜와 현재 확인하는 날짜 사이에 1일 이상 차이가 나면 연속 끊김
+    const diffDays = Math.round((currentDate - itemDate) / (1000 * 60 * 60 * 24));
+    
+    // 첫 날이거나 현재날짜 또는 연속된 이전 날짜인 경우
+    if (i === 0 || diffDays <= 1) {
+      if (sortedData[i].cardioDistance > 0 || sortedData[i].cardioMinute > 0) {
+        streak++;
+        currentDate = new Date(itemDate);
+        currentDate.setDate(currentDate.getDate() - 1); // 이전 날짜로 이동
+      } else {
+        break; // 러닝 기록이 없으면 중단
+      }
+    } else {
+      break; // 연속이 아니면 중단
+    }
+  }
+  
+  runningStreak.textContent = `${streak}일`;
+}
+
+// 연속 헬스 일수 계산
+function calculateGymStreak() {
+  if (!lifeData || lifeData.length === 0 || !gymStreak) return;
+  
+  // 날짜순으로 정렬
+  const sortedData = [...lifeData].sort((a, b) => {
+    const dateA = parseDate(a.date);
+    const dateB = parseDate(b.date);
+    return dateB - dateA; // 내림차순 정렬 (최신 날짜부터)
+  });
+  
+  let streak = 0;
+  let currentDate = new Date();
+  currentDate.setHours(0, 0, 0, 0);
+  
+  // 데이터를 순회하며 연속된 헬스 일수 계산
+  for (let i = 0; i < sortedData.length; i++) {
+    const itemDate = parseDate(sortedData[i].date);
+    itemDate.setHours(0, 0, 0, 0);
+    
+    // 오늘의 날짜와 현재 확인하는 날짜 사이에 1일 이상 차이가 나면 연속 끊김
+    const diffDays = Math.round((currentDate - itemDate) / (1000 * 60 * 60 * 24));
+    
+    // 첫 날이거나 현재날짜 또는 연속된 이전 날짜인 경우
+    if (i === 0 || diffDays <= 1) {
+      if (sortedData[i].strengthTrainingMinutes > 0) {
+        streak++;
+        currentDate = new Date(itemDate);
+        currentDate.setDate(currentDate.getDate() - 1); // 이전 날짜로 이동
+      } else {
+        break; // 헬스 기록이 없으면 중단
+      }
+    } else {
+      break; // 연속이 아니면 중단
+    }
+  }
+  
+  gymStreak.textContent = `${streak}일`;
+}
+
+// 동기부여 메트릭 업데이트 (체중 변화, 근력, 지출)
+function updateMotivationMetrics() {
+  if (!lifeData || lifeData.length === 0) return;
+  
+  // 현재 주(7일) 데이터와 이전 주(7일) 데이터 구분
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const oneWeekAgo = new Date(today);
+  oneWeekAgo.setDate(today.getDate() - 7);
+  
+  const twoWeeksAgo = new Date(today);
+  twoWeeksAgo.setDate(today.getDate() - 14);
+  
+  // 현재 주와 지난 주 데이터 필터링
+  const currentWeekData = lifeData.filter(item => {
+    const itemDate = parseDate(item.date);
+    return itemDate >= oneWeekAgo && itemDate <= today;
+  });
+  
+  const previousWeekData = lifeData.filter(item => {
+    const itemDate = parseDate(item.date);
+    return itemDate >= twoWeeksAgo && itemDate < oneWeekAgo;
+  });
+  
+  // 헬스 시간 계산
+  const currentWeekStrength = currentWeekData.reduce((sum, item) => sum + (item.strengthTrainingMinutes || 0), 0);
+  const previousWeekStrength = previousWeekData.reduce((sum, item) => sum + (item.strengthTrainingMinutes || 0), 0);
+  
+  // 지출 계산
+  const currentWeekSpending = currentWeekData.reduce((sum, item) => sum + (item.spendMoney || 0), 0);
+  const previousWeekSpending = previousWeekData.reduce((sum, item) => sum + (item.spendMoney || 0), 0);
+  
+  // 체중 변화 - 일단 더미 데이터로 설정 (Excel에 해당 필드가 있을 경우 수정 필요)
+  // Excel에 weight 필드가 있다면 아래 코드 수정 필요
+  const weightDiff = 0;
+  
+  // UI 업데이트
+  if (weightChange) {
+    const weightText = weightDiff === 0 ? '변화 없음' : 
+                      (weightDiff > 0 ? `+${weightDiff}kg` : `${weightDiff}kg`);
+    weightChange.textContent = weightText;
+    weightChange.className = weightDiff <= 0 ? 'positive-change' : 'negative-change';
+  }
+  
+  if (strengthSummary) {
+    const strengthDiff = currentWeekStrength - previousWeekStrength;
+    const strengthText = strengthDiff === 0 ? `${currentWeekStrength}분` :
+                        (strengthDiff > 0 ? `${currentWeekStrength}분 (+${strengthDiff})` : 
+                                           `${currentWeekStrength}분 (${strengthDiff})`);
+    strengthSummary.textContent = strengthText;
+    strengthSummary.className = strengthDiff >= 0 ? 'positive-change' : 'negative-change';
+  }
+  
+  if (spendingSummary) {
+    const spendingDiff = currentWeekSpending - previousWeekSpending;
+    const spendingText = spendingDiff === 0 ? `${currentWeekSpending.toLocaleString()}원` :
+                        (spendingDiff > 0 ? `${currentWeekSpending.toLocaleString()}원 (+${spendingDiff.toLocaleString()})` : 
+                                          `${currentWeekSpending.toLocaleString()}원 (${spendingDiff.toLocaleString()})`);
+    spendingSummary.textContent = spendingText;
+    spendingSummary.className = spendingDiff <= 0 ? 'positive-change' : 'negative-change';
+  }
 }

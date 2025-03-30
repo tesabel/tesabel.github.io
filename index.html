@@ -88,6 +88,7 @@
               <button class="tab-button" id="tab-weekly">주간통계</button>
               <button class="tab-button" id="tab-monthly">월간통계</button>
               <button class="tab-button" id="tab-hall">명예의 전당</button>
+              <button class="tab-button" id="tab-results">결과</button>
             </div>
 
             <div class="tab-content">
@@ -741,6 +742,69 @@
                   </div>
                 </div>
               </div>
+              
+              <!-- 결과 탭 -->
+              <div id="results-content" class="tab-pane">
+                <div class="results-container">
+                  <div class="quote-section">
+                    <div class="daily-quote">
+                      <p class="quote-text"></p>
+                      <p class="quote-translation"></p>
+                      <p class="quote-author"></p>
+                    </div>
+                  </div>
+                  
+                  <div class="stats-cards">
+                    <div class="stats-card">
+                      <div class="card-icon">
+                        <i class="fas fa-calendar-check"></i>
+                      </div>
+                      <div class="card-content">
+                        <h3>마지막 업데이트</h3>
+                        <p id="last-update-date">-</p>
+                      </div>
+                    </div>
+                    
+                    <div class="stats-card">
+                      <div class="card-icon">
+                        <i class="fas fa-running"></i>
+                      </div>
+                      <div class="card-content">
+                        <h3>연속 러닝</h3>
+                        <p id="running-streak">0일</p>
+                      </div>
+                    </div>
+                    
+                    <div class="stats-card">
+                      <div class="card-icon">
+                        <i class="fas fa-dumbbell"></i>
+                      </div>
+                      <div class="card-content">
+                        <h3>연속 헬스</h3>
+                        <p id="gym-streak">0일</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="motivation-section">
+                    <h2>주간 현황</h2>
+                    <div class="motivation-metrics">
+                      <div class="motivation-metric">
+                        <h3>체중 변화</h3>
+                        <p id="weight-change">0 kg</p>
+                      </div>
+                      <div class="motivation-metric">
+                        <h3>근력 운동</h3>
+                        <p id="strength-summary">0 분</p>
+                      </div>
+                      <div class="motivation-metric">
+                        <h3>지출 현황</h3>
+                        <p id="spending-summary">0 원</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -753,6 +817,7 @@
         </p>
       </footer>
     </div>
+    <script src="js/quotes.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
