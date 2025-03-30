@@ -2597,82 +2597,105 @@ function getISOWeek(date) {
 
 // 특별 성취 업데이트
 function updateAchievements() {
-  // 100일 기록 업데이트
+  // 300일 기록 업데이트
   const totalDays = new Set(
     lifeData.map((item) => formatDate(parseDate(item.date)))
   ).size;
-  const achievement100Days = document.getElementById("achievement-100-days");
+  const achievement300Days = document.getElementById("achievement-300-days");
+  const achievementCard300Days = document.getElementById(
+    "achievement-card-300-days"
+  );
 
-  if (totalDays >= 100) {
-    achievement100Days.classList.add("achieved");
-    achievement100Days.querySelector(".achievement-status").textContent =
+  if (totalDays >= 300) {
+    achievement300Days.classList.add("achieved");
+    achievement300Days.querySelector(".achievement-status").textContent =
       "달성 완료!";
+    achievementCard300Days.classList.add("achieved");
+    achievementCard300Days.querySelector(
+      ".achievement-date"
+    ).textContent = `달성일: ${formatDateKorean(
+      parseDate(lifeData[lifeData.length - 1].date)
+    )}`;
   } else {
-    achievement100Days.querySelector(
+    achievement300Days.querySelector(
       ".achievement-status"
-    ).textContent = `${totalDays}/100일`;
+    ).textContent = `${totalDays}/300일`;
   }
 
-  // 마라톤 거리 업데이트
+  // 서울-부산 거리 업데이트
   const totalDistance = lifeData.reduce(
     (sum, item) => sum + item.cardioDistance,
     0
   );
-  const marathonDistance = 42.195;
-  const achievementMarathon = document.getElementById("achievement-marathon");
-
-  if (totalDistance >= marathonDistance) {
-    achievementMarathon.classList.add("achieved");
-    achievementMarathon.querySelector(".achievement-status").textContent =
-      "달성 완료!";
-  } else {
-    achievementMarathon.querySelector(
-      ".achievement-status"
-    ).textContent = `${totalDistance.toFixed(1)}/${marathonDistance}km`;
-  }
-
-  // 30일 연속 운동 업데이트
-  const sortedData = [...lifeData].sort(
-    (a, b) => new Date(parseDate(a.date)) - new Date(parseDate(b.date))
+  const seoulBusanDistance = 450; // 서울-부산 거리 (km)
+  const achievementSeoulBusan = document.getElementById(
+    "achievement-seoul-busan"
+  );
+  const achievementCardSeoulBusan = document.getElementById(
+    "achievement-card-seoul-busan"
   );
 
-  let maxStreak = 0;
-  let currentStreak = 0;
-  let previousDate = null;
-
-  for (const item of sortedData) {
-    if (item.cardioDistance > 0 || item.strengthTrainingMinutes > 0) {
-      const currentDate = parseDate(item.date);
-
-      if (previousDate) {
-        const diffDays = Math.round(
-          (currentDate - previousDate) / (1000 * 60 * 60 * 24)
-        );
-
-        if (diffDays === 1) {
-          currentStreak++;
-        } else {
-          currentStreak = 1;
-        }
-      } else {
-        currentStreak = 1;
+  if (totalDistance >= seoulBusanDistance) {
+    achievementSeoulBusan.classList.add("achieved");
+    achievementSeoulBusan.querySelector(".achievement-status").textContent =
+      "달성 완료!";
+    achievementCardSeoulBusan.classList.add("achieved");
+    // 달성일 찾기
+    let accumulatedDistance = 0;
+    let achievementDate = null;
+    for (const item of lifeData) {
+      accumulatedDistance += item.cardioDistance;
+      if (accumulatedDistance >= seoulBusanDistance && !achievementDate) {
+        achievementDate = item.date;
       }
-
-      previousDate = currentDate;
-      maxStreak = Math.max(maxStreak, currentStreak);
     }
+    if (achievementDate) {
+      achievementCardSeoulBusan.querySelector(
+        ".achievement-date"
+      ).textContent = `달성일: ${formatDateKorean(parseDate(achievementDate))}`;
+    }
+  } else {
+    achievementSeoulBusan.querySelector(
+      ".achievement-status"
+    ).textContent = `${totalDistance.toFixed(1)}/${seoulBusanDistance}km`;
   }
 
-  const achievement30Streak = document.getElementById("achievement-30-streak");
+  // 100시간 근력 운동 업데이트
+  const totalStrengthHours =
+    lifeData.reduce((sum, item) => sum + item.strengthTrainingMinutes, 0) / 60;
+  const strength100Hours = 100;
+  const achievementStrength100 = document.getElementById(
+    "achievement-strength-100"
+  );
+  const achievementCardStrength100 = document.getElementById(
+    "achievement-card-strength-100"
+  );
 
-  if (maxStreak >= 30) {
-    achievement30Streak.classList.add("achieved");
-    achievement30Streak.querySelector(".achievement-status").textContent =
+  if (totalStrengthHours >= strength100Hours) {
+    achievementStrength100.classList.add("achieved");
+    achievementStrength100.querySelector(".achievement-status").textContent =
       "달성 완료!";
+    if (achievementCardStrength100) {
+      achievementCardStrength100.classList.add("achieved");
+      // 달성일 찾기
+      let accumulatedHours = 0;
+      let achievementDate = null;
+      for (const item of lifeData) {
+        accumulatedHours += item.strengthTrainingMinutes / 60;
+        if (accumulatedHours >= strength100Hours && !achievementDate) {
+          achievementDate = item.date;
+        }
+      }
+      if (achievementDate) {
+        achievementCardStrength100.querySelector(
+          ".achievement-date"
+        ).textContent = `달성일: ${formatDateKorean(parseDate(achievementDate))}`;
+      }
+    }
   } else {
-    achievement30Streak.querySelector(
+    achievementStrength100.querySelector(
       ".achievement-status"
-    ).textContent = `${maxStreak}/30일`;
+    ).textContent = `${totalStrengthHours.toFixed(1)}/${strength100Hours}시간`;
   }
 }
 

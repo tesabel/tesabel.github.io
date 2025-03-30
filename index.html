@@ -700,41 +700,83 @@
 
                     <div class="hall-category">
                       <h3>특별 성취</h3>
-                      <div class="hall-records achievement-records">
-                        <div class="achievement" id="achievement-100-days">
+                      <div class="hall-records">
+                        <div class="hall-record" id="achievement-300-days">
+                          <div class="medal gold-medal">
+                            <i class="fas fa-trophy"></i>
+                          </div>
+                          <div class="record-details">
+                            <span class="record-name">300일 달성</span>
+                            <span class="record-value achievement-status"
+                              >0/300일</span
+                            >
+                            <span class="record-date">300일 연속 기록</span>
+                          </div>
+                        </div>
+                        <div class="hall-record" id="achievement-seoul-busan">
+                          <div class="medal silver-medal">
+                            <i class="fas fa-route"></i>
+                          </div>
+                          <div class="record-details">
+                            <span class="record-name">서울-부산</span>
+                            <span class="record-value achievement-status"
+                              >0/450km</span
+                            >
+                            <span class="record-date">450km 거리 달성</span>
+                          </div>
+                        </div>
+                        <div class="hall-record" id="achievement-strength-100">
+                          <div class="medal bronze-medal">
+                            <i class="fas fa-dumbbell"></i>
+                          </div>
+                          <div class="record-details">
+                            <span class="record-name">근육몬 되기</span>
+                            <span class="record-value achievement-status"
+                              >0/100시간</span
+                            >
+                            <span class="record-date">100시간 근력 운동</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="hall-category">
+                      <h3>달성한 업적</h3>
+                      <div class="achievement-cards">
+                        <div
+                          class="achievement-card achieved"
+                          id="achievement-card-100-days"
+                        >
                           <div class="achievement-icon">
                             <i class="fas fa-calendar-check"></i>
                           </div>
-                          <div class="achievement-details">
-                            <span class="achievement-name">100일 기록</span>
-                            <span class="achievement-description"
-                              >100일 이상 기록 작성</span
-                            >
-                            <span class="achievement-status">미달성</span>
+                          <div class="achievement-info">
+                            <h4>100일 달성</h4>
+                            <p>100일 동안 꾸준히 기록을 남겼습니다!</p>
                           </div>
                         </div>
-                        <div class="achievement" id="achievement-marathon">
+                        <div
+                          class="achievement-card achieved"
+                          id="achievement-card-strength-50"
+                        >
+                          <div class="achievement-icon">
+                            <i class="fas fa-dumbbell"></i>
+                          </div>
+                          <div class="achievement-info">
+                            <h4>근력의 시작</h4>
+                            <p>누적 근력 운동 50시간 달성!</p>
+                          </div>
+                        </div>
+                        <div
+                          class="achievement-card achieved"
+                          id="achievement-card-marathon"
+                        >
                           <div class="achievement-icon">
                             <i class="fas fa-running"></i>
                           </div>
-                          <div class="achievement-details">
-                            <span class="achievement-name">마라톤 거리</span>
-                            <span class="achievement-description"
-                              >누적 거리 42.195km 달성</span
-                            >
-                            <span class="achievement-status">미달성</span>
-                          </div>
-                        </div>
-                        <div class="achievement" id="achievement-30-streak">
-                          <div class="achievement-icon">
-                            <i class="fas fa-fire"></i>
-                          </div>
-                          <div class="achievement-details">
-                            <span class="achievement-name">30일 연속 운동</span>
-                            <span class="achievement-description"
-                              >30일 연속 운동 달성</span
-                            >
-                            <span class="achievement-status">미달성</span>
+                          <div class="achievement-info">
+                            <h4>마라톤 완주</h4>
+                            <p>42.195km 거리 달성!</p>
                           </div>
                         </div>
                       </div>
@@ -742,7 +784,7 @@
                   </div>
                 </div>
               </div>
-              
+
               <!-- 결과 탭 -->
               <div id="results-content" class="tab-pane">
                 <div class="results-container">
@@ -753,7 +795,7 @@
                       <p class="quote-author"></p>
                     </div>
                   </div>
-                  
+
                   <div class="stats-cards">
                     <div class="stats-card">
                       <div class="card-icon">
@@ -764,7 +806,7 @@
                         <p id="last-update-date">-</p>
                       </div>
                     </div>
-                    
+
                     <div class="stats-card">
                       <div class="card-icon">
                         <i class="fas fa-running"></i>
@@ -774,7 +816,7 @@
                         <p id="running-streak">0일</p>
                       </div>
                     </div>
-                    
+
                     <div class="stats-card">
                       <div class="card-icon">
                         <i class="fas fa-dumbbell"></i>
@@ -785,7 +827,7 @@
                       </div>
                     </div>
                   </div>
-                  
+
                   <div class="motivation-section">
                     <h2>주간 현황</h2>
                     <div class="motivation-metrics">
