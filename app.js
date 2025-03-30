@@ -2626,3 +2626,53 @@ function updateAchievements() {
     ).textContent = `${maxStreak}/30일`;
   }
 }
+
+// 파일 불러오기 처리
+function handleFileImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    try {
+      const importedData = JSON.parse(e.target.result);
+      lifeData = importedData;
+      localStorage.setItem("lifeData", JSON.stringify(lifeData));
+
+      // 오늘의 총점 갱신
+      const today = new Date();
+      const todayStr = formatDate(today);
+      const todayData = lifeData.find((item) => {
+        const itemDate = parseDate(item.date);
+        return formatDate(itemDate) === todayStr;
+      }) || {
+        date: todayStr,
+        cardioDistance: 0,
+        cardioMinute: 0,
+        isOutdoorRunning: false,
+        strengthTrainingMinutes: 0,
+        spendMoney: 0,
+      };
+
+      // 점수 업데이트
+      updateScoreDisplay(todayData);
+
+      // 나머지 UI 업데이트
+      updateView();
+      updateStatistics();
+      updateHallOfFame();
+      updateWeeklyStats();
+      updateMonthlyStats();
+      updateWeeklyTrendChart();
+      updateMonthCalendars();
+
+      alert("데이터를 성공적으로 가져왔습니다.");
+    } catch (error) {
+      console.error("파일 불러오기 실패:", error);
+      alert(
+        "파일 불러오기에 실패했습니다. 올바른 형식의 파일인지 확인해주세요."
+      );
+    }
+  };
+  reader.readAsText(file);
+}
