@@ -454,35 +454,151 @@ footer {
 @media (max-width: 768px) {
   header {
     flex-direction: column;
-    align-items: start;
+    align-items: flex-start;
     gap: 15px;
+  }
+
+  .date-nav {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 10px 0;
+  }
+
+  .date-nav button {
+    flex: 1;
+    min-width: 80px;
   }
 
   .main-content {
     grid-template-columns: 1fr;
+    gap: 15px;
   }
 
   .data-form {
-    position: static;
+    position: relative;
+    height: auto;
+    margin-bottom: 20px;
   }
 
   .tab-buttons {
     flex-wrap: wrap;
+    gap: 5px;
   }
 
   .tab-button {
-    flex-grow: 1;
-    padding: 10px;
+    flex: 1;
+    min-width: 80px;
+    font-size: 12px;
+    padding: 8px 5px;
+  }
+
+  .chart-controls {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .date-range-controls {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .date-range-controls input[type="date"] {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .chart-box {
+    height: 300px;
+    margin: 15px 0;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 600px;
+  }
+
+  th,
+  td {
+    padding: 8px;
     font-size: 14px;
   }
 
-  .button-row,
-  .button-group {
-    flex-direction: column;
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
   }
 
   .chart-metrics {
-    flex-direction: column;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .metric {
+    padding: 10px;
+  }
+
+  .metric h3 {
+    font-size: 14px;
+  }
+
+  .metric p {
+    font-size: 16px;
+  }
+
+  .score-display {
+    margin: 10px 0;
+  }
+
+  .score-number {
+    font-size: 36px;
+  }
+
+  .stars {
+    font-size: 20px;
+  }
+
+  .d-day-number {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 10px;
+  }
+
+  .tab-button {
+    min-width: 70px;
+    font-size: 11px;
+  }
+
+  .chart-box {
+    height: 250px;
+  }
+
+  .metric h3 {
+    font-size: 12px;
+  }
+
+  .metric p {
+    font-size: 14px;
+  }
+
+  .score-number {
+    font-size: 32px;
+  }
+
+  .stars {
+    font-size: 18px;
+  }
+
+  .d-day-number {
+    font-size: 24px;
   }
 }
 
