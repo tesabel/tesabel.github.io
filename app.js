@@ -13,8 +13,9 @@ const SCORE_CONFIG = {
     weight: 0.5, // 총점수에서 차지하는 비율
   },
   spending: {
-    baseScore: 100, // 기본 점수 (0원 지출시)
-    targetAmount: 20000, // 원, 0점이 되는 목표 지출
+    baseScore: 110, // 기본 점수 (0원 지출시)
+    targetAmount: 50000, // 원, 0점이 되는 목표 지출
+    pointsPer1000Won: 1, // 1000원당 감소하는 점수
     weight: 0.3, // 총점수에서 차지하는 비율
   },
 };
@@ -1154,15 +1155,12 @@ function updateScoreDisplay(data) {
   // 지출 점수 계산 (0~100)
   let spendingValue = SCORE_CONFIG.spending.baseScore;
   if (data.spendMoney > 0) {
-    if (data.spendMoney >= SCORE_CONFIG.spending.targetAmount) {
-      spendingValue = 0;
-    } else {
-      // 0원~20000원 사이에서 선형적으로 감소
-      spendingValue = Math.round(
-        SCORE_CONFIG.spending.baseScore *
-          (1 - data.spendMoney / SCORE_CONFIG.spending.targetAmount)
-      );
-    }
+    // 1000원당 1점씩 감소
+    const pointsReduction = Math.floor(data.spendMoney / 1000);
+    spendingValue = Math.max(
+      0,
+      SCORE_CONFIG.spending.baseScore - pointsReduction
+    );
   }
 
   // 표시 업데이트
@@ -1787,15 +1785,12 @@ function calculateTotalScore(item) {
   // 지출 점수 계산 (0~100)
   let spendingValue = SCORE_CONFIG.spending.baseScore;
   if (item.spendMoney > 0) {
-    if (item.spendMoney >= SCORE_CONFIG.spending.targetAmount) {
-      spendingValue = 0;
-    } else {
-      // 0원~20000원 사이에서 선형적으로 감소
-      spendingValue = Math.round(
-        SCORE_CONFIG.spending.baseScore *
-          (1 - item.spendMoney / SCORE_CONFIG.spending.targetAmount)
-      );
-    }
+    // 1000원당 1점씩 감소
+    const pointsReduction = Math.floor(item.spendMoney / 1000);
+    spendingValue = Math.max(
+      0,
+      SCORE_CONFIG.spending.baseScore - pointsReduction
+    );
   }
 
   // 총점 계산 (0~100+)
