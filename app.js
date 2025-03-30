@@ -2754,19 +2754,32 @@ function calculateRunningStreak() {
     return dateB - dateA; // 내림차순 정렬 (최신 날짜부터)
   });
   
+  // 데이터가 있는 마지막 날짜 찾기 (마지막 업데이트 날짜)
+  const lastUpdateItem = sortedData.find(item => 
+    item.cardioDistance > 0 || 
+    item.cardioMinute > 0 || 
+    item.strengthTrainingMinutes > 0 || 
+    item.spendMoney > 0
+  );
+  
+  if (!lastUpdateItem) {
+    runningStreak.textContent = '0일';
+    return;
+  }
+  
   let streak = 0;
-  let currentDate = new Date();
+  let currentDate = parseDate(lastUpdateItem.date);
   currentDate.setHours(0, 0, 0, 0);
   
-  // 데이터를 순회하며 연속된 러닝 일수 계산
+  // 데이터를 순회하며 마지막 업데이트 날짜 기준으로 연속된 러닝 일수 계산
   for (let i = 0; i < sortedData.length; i++) {
     const itemDate = parseDate(sortedData[i].date);
     itemDate.setHours(0, 0, 0, 0);
     
-    // 오늘의 날짜와 현재 확인하는 날짜 사이에 1일 이상 차이가 나면 연속 끊김
+    // 마지막 업데이트 날짜와 현재 확인하는 날짜 사이의 차이
     const diffDays = Math.round((currentDate - itemDate) / (1000 * 60 * 60 * 24));
     
-    // 첫 날이거나 현재날짜 또는 연속된 이전 날짜인 경우
+    // 첫 날이거나 연속된 이전 날짜인 경우
     if (i === 0 || diffDays <= 1) {
       if (sortedData[i].cardioDistance > 0 || sortedData[i].cardioMinute > 0) {
         streak++;
@@ -2794,19 +2807,32 @@ function calculateGymStreak() {
     return dateB - dateA; // 내림차순 정렬 (최신 날짜부터)
   });
   
+  // 데이터가 있는 마지막 날짜 찾기 (마지막 업데이트 날짜)
+  const lastUpdateItem = sortedData.find(item => 
+    item.cardioDistance > 0 || 
+    item.cardioMinute > 0 || 
+    item.strengthTrainingMinutes > 0 || 
+    item.spendMoney > 0
+  );
+  
+  if (!lastUpdateItem) {
+    gymStreak.textContent = '0일';
+    return;
+  }
+  
   let streak = 0;
-  let currentDate = new Date();
+  let currentDate = parseDate(lastUpdateItem.date);
   currentDate.setHours(0, 0, 0, 0);
   
-  // 데이터를 순회하며 연속된 헬스 일수 계산
+  // 데이터를 순회하며 마지막 업데이트 날짜 기준으로 연속된 헬스 일수 계산
   for (let i = 0; i < sortedData.length; i++) {
     const itemDate = parseDate(sortedData[i].date);
     itemDate.setHours(0, 0, 0, 0);
     
-    // 오늘의 날짜와 현재 확인하는 날짜 사이에 1일 이상 차이가 나면 연속 끊김
+    // 마지막 업데이트 날짜와 현재 확인하는 날짜 사이의 차이
     const diffDays = Math.round((currentDate - itemDate) / (1000 * 60 * 60 * 24));
     
-    // 첫 날이거나 현재날짜 또는 연속된 이전 날짜인 경우
+    // 첫 날이거나 연속된 이전 날짜인 경우
     if (i === 0 || diffDays <= 1) {
       if (sortedData[i].strengthTrainingMinutes > 0) {
         streak++;
@@ -2823,7 +2849,7 @@ function calculateGymStreak() {
   gymStreak.textContent = `${streak}일`;
 }
 
-// 동기부여 메트릭 업데이트 (체중 변화, 근력, 지출)
+// 동기부여 메트릭 업데이트 (러닝 거리 변화, 근력, 지출)
 function updateMotivationMetrics() {
   if (!lifeData || lifeData.length === 0) return;
   
@@ -2848,6 +2874,10 @@ function updateMotivationMetrics() {
     return itemDate >= twoWeeksAgo && itemDate < oneWeekAgo;
   });
   
+  // 러닝 거리 계산
+  const currentWeekDistance = currentWeekData.reduce((sum, item) => sum + (item.cardioDistance || 0), 0);
+  const previousWeekDistance = previousWeekData.reduce((sum, item) => sum + (item.cardioDistance || 0), 0);
+  
   // 헬스 시간 계산
   const currentWeekStrength = currentWeekData.reduce((sum, item) => sum + (item.strengthTrainingMinutes || 0), 0);
   const previousWeekStrength = previousWeekData.reduce((sum, item) => sum + (item.strengthTrainingMinutes || 0), 0);
@@ -2856,16 +2886,16 @@ function updateMotivationMetrics() {
   const currentWeekSpending = currentWeekData.reduce((sum, item) => sum + (item.spendMoney || 0), 0);
   const previousWeekSpending = previousWeekData.reduce((sum, item) => sum + (item.spendMoney || 0), 0);
   
-  // 체중 변화 - 일단 더미 데이터로 설정 (Excel에 해당 필드가 있을 경우 수정 필요)
-  // Excel에 weight 필드가 있다면 아래 코드 수정 필요
-  const weightDiff = 0;
+  // 러닝 거리 변화
+  const distanceDiff = currentWeekDistance - previousWeekDistance;
   
   // UI 업데이트
   if (weightChange) {
-    const weightText = weightDiff === 0 ? '변화 없음' : 
-                      (weightDiff > 0 ? `+${weightDiff}kg` : `${weightDiff}kg`);
-    weightChange.textContent = weightText;
-    weightChange.className = weightDiff <= 0 ? 'positive-change' : 'negative-change';
+    const distanceText = distanceDiff === 0 ? `${currentWeekDistance.toFixed(1)}km` : 
+                      (distanceDiff > 0 ? `${currentWeekDistance.toFixed(1)}km (+${distanceDiff.toFixed(1)})` : 
+                                        `${currentWeekDistance.toFixed(1)}km (${distanceDiff.toFixed(1)})`);
+    weightChange.textContent = distanceText;
+    weightChange.className = distanceDiff >= 0 ? 'positive-change' : 'negative-change';
   }
   
   if (strengthSummary) {
