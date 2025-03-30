@@ -113,6 +113,28 @@ document.addEventListener("DOMContentLoaded", function () {
   // 명언 로드
   loadDailyQuote();
 
+  // 오늘의 총점 갱신
+  const today = new Date();
+  const todayStr = formatDate(today);
+  const todayData = lifeData.find((item) => {
+    const itemDate = parseDate(item.date);
+    return formatDate(itemDate) === todayStr;
+  }) || {
+    date: todayStr,
+    cardioDistance: 0,
+    cardioMinute: 0,
+    isOutdoorRunning: false,
+    strengthTrainingMinutes: 0,
+    spendMoney: 0,
+  };
+
+  // 오늘의 총점 섹션 표시
+  const dailyScoreSection = document.querySelector(".daily-score");
+  dailyScoreSection.style.display = "block";
+
+  // 점수 업데이트
+  updateScoreDisplay(todayData);
+
   // 날짜 범위 입력 이벤트 리스너
   document
     .querySelectorAll('.date-range-controls input[type="date"]')
@@ -374,15 +396,15 @@ function updateView() {
   if (spendMoneyInput) spendMoneyInput.value = dayData.spendMoney;
 
   // 오늘의 총점 섹션 표시/숨김 처리
-  const dailyScoreSection = document.querySelector('.daily-score');
+  const dailyScoreSection = document.querySelector(".daily-score");
   if (matchingItem) {
     // 데이터가 있을 경우에만 표시
-    dailyScoreSection.style.display = 'block';
+    dailyScoreSection.style.display = "block";
     // 점수 업데이트
     updateScoreDisplay(dayData);
   } else {
     // 데이터가 없을 경우 숨김
-    dailyScoreSection.style.display = 'none';
+    dailyScoreSection.style.display = "none";
   }
 
   // 테이블과 차트 업데이트
@@ -1208,10 +1230,10 @@ function importData() {
     alert("파일을 선택해주세요.");
     return;
   }
-  
+
   // 데이터 불러온 후 오늘의 총점 표시 활성화
-  const dailyScoreSection = document.querySelector('.daily-score');
-  dailyScoreSection.style.display = 'block';
+  const dailyScoreSection = document.querySelector(".daily-score");
+  dailyScoreSection.style.display = "block";
 
   const reader = new FileReader();
   reader.onload = function (e) {
@@ -1456,8 +1478,8 @@ function resetData() {
     saveData();
 
     // 오늘의 총점 섹션 숨기기
-    const dailyScoreSection = document.querySelector('.daily-score');
-    dailyScoreSection.style.display = 'none';
+    const dailyScoreSection = document.querySelector(".daily-score");
+    dailyScoreSection.style.display = "none";
 
     // 차트, 테이블, 통계 초기화
     updateAllCharts();
