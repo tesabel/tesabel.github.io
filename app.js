@@ -1099,6 +1099,11 @@ function updateStreakInfo() {
     }
   }
 
+  // 오늘 데이터가 있는 경우 현재 연속 기록에 포함
+  if (hasTodayData) {
+    currentStreak++;
+  }
+
   document.getElementById("current-streak").textContent = `${currentStreak}일`;
   document.getElementById("max-streak").textContent = `${maxStreak}일`;
 }
@@ -2782,11 +2787,7 @@ function calculateRunningStreak() {
 
   // 데이터가 있는 마지막 날짜 찾기 (마지막 업데이트 날짜)
   const lastUpdateItem = sortedData.find(
-    (item) =>
-      item.cardioDistance > 0 ||
-      item.cardioMinute > 0 ||
-      item.strengthTrainingMinutes > 0 ||
-      item.spendMoney > 0
+    (item) => item.cardioDistance > 0 || item.cardioMinute > 0
   );
 
   if (!lastUpdateItem) {
@@ -2822,6 +2823,22 @@ function calculateRunningStreak() {
     }
   }
 
+  // 오늘 데이터가 있는 경우 현재 연속 기록에 포함
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const hasTodayData = sortedData.some((item) => {
+    const itemDate = parseDate(item.date);
+    itemDate.setHours(0, 0, 0, 0);
+    return (
+      itemDate.getTime() === today.getTime() &&
+      (item.cardioDistance > 0 || item.cardioMinute > 0)
+    );
+  });
+
+  if (hasTodayData) {
+    streak++;
+  }
+
   runningStreak.textContent = `${streak}일`;
 }
 
@@ -2829,22 +2846,17 @@ function calculateRunningStreak() {
 function calculateGymStreak() {
   if (!lifeData || lifeData.length === 0 || !gymStreak) return;
 
-  // 날짜순으로 정렬
+  // 날짜순으로 정렬 (최신 날짜부터)
   const sortedData = [...lifeData].sort((a, b) => {
     const dateA = parseDate(a.date);
     const dateB = parseDate(b.date);
-    return dateB - dateA; // 내림차순 정렬 (최신 날짜부터)
+    return dateB - dateA;
   });
 
-  // 데이터가 있는 마지막 날짜 찾기 (마지막 업데이트 날짜)
+  // 마지막 업데이트 날짜 찾기
   const lastUpdateItem = sortedData.find(
-    (item) =>
-      item.cardioDistance > 0 ||
-      item.cardioMinute > 0 ||
-      item.strengthTrainingMinutes > 0 ||
-      item.spendMoney > 0
+    (item) => item.strengthTrainingMinutes > 0
   );
-
   if (!lastUpdateItem) {
     gymStreak.textContent = "0일";
     return;
@@ -2854,28 +2866,21 @@ function calculateGymStreak() {
   let currentDate = parseDate(lastUpdateItem.date);
   currentDate.setHours(0, 0, 0, 0);
 
-  // 데이터를 순회하며 마지막 업데이트 날짜 기준으로 연속된 헬스 일수 계산
-  for (let i = 0; i < sortedData.length; i++) {
-    const itemDate = parseDate(sortedData[i].date);
-    itemDate.setHours(0, 0, 0, 0);
+  // 마지막 업데이트 날짜부터 연속 기록 계산
+  while (true) {
+    const hasData = sortedData.some((item) => {
+      const itemDate = parseDate(item.date);
+      itemDate.setHours(0, 0, 0, 0);
+      return (
+        itemDate.getTime() === currentDate.getTime() &&
+        item.strengthTrainingMinutes > 0
+      );
+    });
 
-    // 마지막 업데이트 날짜와 현재 확인하는 날짜 사이의 차이
-    const diffDays = Math.round(
-      (currentDate - itemDate) / (1000 * 60 * 60 * 24)
-    );
+    if (!hasData) break;
 
-    // 첫 날이거나 연속된 이전 날짜인 경우
-    if (i === 0 || diffDays <= 1) {
-      if (sortedData[i].strengthTrainingMinutes > 0) {
-        streak++;
-        currentDate = new Date(itemDate);
-        currentDate.setDate(currentDate.getDate() - 1); // 이전 날짜로 이동
-      } else {
-        break; // 헬스 기록이 없으면 중단
-      }
-    } else {
-      break; // 연속이 아니면 중단
-    }
+    streak++;
+    currentDate.setDate(currentDate.getDate() - 1);
   }
 
   gymStreak.textContent = `${streak}일`;
