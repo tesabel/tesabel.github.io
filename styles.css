@@ -659,6 +659,7 @@ footer {
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
   padding: 20px;
+  width: 100%;
 }
 
 .stats-card {
@@ -666,6 +667,7 @@ footer {
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
 
 .stats-card h3 {
@@ -822,7 +824,7 @@ footer {
 }
 
 .weekly-chart-card {
-  grid-column: span 2;
+  grid-column: 1 / -1;
 }
 
 .chart-type-buttons {
@@ -833,6 +835,19 @@ footer {
 
 .weekly-activity-table {
   margin-top: 15px;
+  width: 100%;
+  text-align: center;
+}
+
+.weekly-activity-table .table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.weekly-activity-table table {
+  width: 100%;
+  margin: 0 auto;
+  table-layout: fixed;
 }
 
 /* 월간 통계 캘린더 스타일 */
