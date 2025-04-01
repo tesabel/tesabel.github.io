@@ -1848,6 +1848,23 @@ function updateWeeklyActivityTable(weekStart) {
   // 요일 이름
   const weekdayNames = ["월", "화", "수", "목", "금", "토", "일"];
 
+  // 마지막 업데이트 날짜 찾기
+  const sortedData = [...lifeData].sort((a, b) => {
+    const dateA = parseDate(a.date);
+    const dateB = parseDate(b.date);
+    return dateB - dateA;
+  });
+
+  const lastUpdateItem = sortedData.find(
+    (item) =>
+      item.cardioDistance > 0 ||
+      item.cardioMinute > 0 ||
+      item.strengthTrainingMinutes > 0 ||
+      item.spendMoney > 0
+  );
+
+  const lastUpdateDate = lastUpdateItem ? parseDate(lastUpdateItem.date) : null;
+
   // 주간 활동 테이블 생성
   for (let i = 0; i < 7; i++) {
     const currentDate = new Date(weekStart);
@@ -1866,6 +1883,7 @@ function updateWeeklyActivityTable(weekStart) {
     };
 
     const totalScore = calculateTotalScore(dayItem);
+    const isAfterLastUpdate = lastUpdateDate && currentDate > lastUpdateDate;
 
     const row = document.createElement("tr");
     row.innerHTML = `
@@ -1886,7 +1904,7 @@ function updateWeeklyActivityTable(weekStart) {
           ? dayItem.spendMoney.toLocaleString() + "원"
           : "-"
       }</td>
-      <td>${totalScore > 0 ? totalScore + "점" : "-"}</td>
+      <td>${totalScore > 0 && !isAfterLastUpdate ? totalScore + "점" : "-"}</td>
     `;
 
     tableBody.appendChild(row);
@@ -1903,6 +1921,23 @@ function updateWeeklyTrendChart(chartType = "score") {
 
   // 요일 라벨 생성
   const labels = ["월", "화", "수", "목", "금", "토", "일"];
+
+  // 마지막 업데이트 날짜 찾기
+  const sortedData = [...lifeData].sort((a, b) => {
+    const dateA = parseDate(a.date);
+    const dateB = parseDate(b.date);
+    return dateB - dateA;
+  });
+
+  const lastUpdateItem = sortedData.find(
+    (item) =>
+      item.cardioDistance > 0 ||
+      item.cardioMinute > 0 ||
+      item.strengthTrainingMinutes > 0 ||
+      item.spendMoney > 0
+  );
+
+  const lastUpdateDate = lastUpdateItem ? parseDate(lastUpdateItem.date) : null;
 
   // 데이터 준비
   const chartData = [];
@@ -1924,22 +1959,25 @@ function updateWeeklyTrendChart(chartType = "score") {
     };
 
     let value = 0;
+    const isAfterLastUpdate = lastUpdateDate && currentDate > lastUpdateDate;
 
-    switch (chartType) {
-      case "score":
-        value = calculateTotalScore(dayItem);
-        break;
-      case "cardio":
-        value = dayItem.cardioDistance;
-        break;
-      case "strength":
-        value = dayItem.strengthTrainingMinutes;
-        break;
-      case "spending":
-        value = dayItem.spendMoney;
-        break;
-      default:
-        value = calculateTotalScore(dayItem);
+    if (!isAfterLastUpdate) {
+      switch (chartType) {
+        case "score":
+          value = calculateTotalScore(dayItem);
+          break;
+        case "cardio":
+          value = dayItem.cardioDistance;
+          break;
+        case "strength":
+          value = dayItem.strengthTrainingMinutes;
+          break;
+        case "spending":
+          value = dayItem.spendMoney;
+          break;
+        default:
+          value = calculateTotalScore(dayItem);
+      }
     }
 
     chartData.push(value);
