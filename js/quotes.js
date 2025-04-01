@@ -352,6 +352,268 @@ const quotes = [
     translation: "할 수 있다고 믿으면 절반은 이룬 것이다.",
     author: "Theodore Roosevelt",
   },
+  // 추가할 명언들
+  {
+    text: "The only way to do great work is to love what you do. If you haven't found it yet, keep looking. Don't settle.",
+    translation:
+      "위대한 일을 하는 유일한 방법은 자신이 하는 일을 사랑하는 것이다. 아직 찾지 못했다면, 계속 찾아라. 타협하지 마라.",
+    author: "Steve Jobs",
+  },
+  {
+    text: "Start where you are. Use what you have. Do what you can.",
+    translation:
+      "당신이 있는 곳에서 시작하라. 가진 것을 활용하라. 할 수 있는 일을 하라.",
+    author: "Arthur Ashe",
+  },
+  {
+    text: "Your big opportunity may be right where you are now.",
+    translation: "당신의 큰 기회는 지금 당신이 있는 바로 그곳에 있을 수 있다.",
+    author: "Napoleon Hill",
+  },
+  {
+    text: "Life begins at the end of your comfort zone.",
+    translation: "인생은 당신의 편안함이 끝나는 곳에서 시작된다.",
+    author: "Neale Donald Walsch",
+  },
+  {
+    text: "Motivation is what gets you started. Habit is what keeps you going.",
+    translation:
+      "동기는 당신을 시작하게 하는 것이고, 습관은 당신을 계속 가게 하는 것이다.",
+    author: "Jim Ryun",
+  },
+  {
+    text: "If you're going through hell, keep going.",
+    translation: "지옥을 지나고 있다면, 계속 가라.",
+    author: "Winston Churchill",
+  },
+  {
+    text: "Small daily improvements are the key to staggering long-term results.",
+    translation: "매일의 작은 개선이 놀라운 장기적 결과의 열쇠이다.",
+    author: "Anonymous",
+  },
+  {
+    text: "The harder I work, the luckier I get.",
+    translation: "더 열심히 일할수록, 더 운이 좋아진다.",
+    author: "Gary Player",
+  },
+  {
+    text: "You are never too old to set another goal or to dream a new dream.",
+    translation:
+      "다른 목표를 세우거나 새로운 꿈을 꾸기에 너무 늙은 나이는 없다.",
+    author: "C.S. Lewis",
+  },
+  {
+    text: "Action is the foundational key to all success.",
+    translation: "행동은 모든 성공의 기초가 되는 열쇠이다.",
+    author: "Pablo Picasso",
+  },
+  {
+    text: "Don't wait for opportunity. Create it.",
+    translation: "기회를 기다리지 마라. 창조하라.",
+    author: "Anonymous",
+  },
+  {
+    text: "The secret of getting ahead is getting started.",
+    translation: "앞서 나가는 비결은 시작하는 것이다.",
+    author: "Mark Twain",
+  },
+  {
+    text: "The only limit to our realization of tomorrow is our doubts of today.",
+    translation: "내일을 실현하는 데 유일한 한계는 오늘의 의심이다.",
+    author: "Franklin D. Roosevelt",
+  },
+  {
+    text: "Wake up with determination. Go to bed with satisfaction.",
+    translation: "결심으로 일어나고, 만족으로 잠자리에 들어라.",
+    author: "Anonymous",
+  },
+  {
+    text: "The difference between ordinary and extraordinary is that little extra.",
+    translation: "평범함과 비범함의 차이는 그 작은 '추가'에 있다.",
+    author: "Jimmy Johnson",
+  },
+  {
+    text: "What you do today can improve all your tomorrows.",
+    translation: "오늘 당신이 하는 일이 모든 내일을 개선할 수 있다.",
+    author: "Ralph Marston",
+  },
+  {
+    text: "The key to success is to focus on goals, not obstacles.",
+    translation: "성공의 열쇠는 장애물이 아닌 목표에 집중하는 것이다.",
+    author: "Anonymous",
+  },
+  {
+    text: "Dreams don't work unless you do.",
+    translation: "꿈은 당신이 행동하지 않으면 이루어지지 않는다.",
+    author: "John C. Maxwell",
+  },
+  {
+    text: "The pain of discipline is far less than the pain of regret.",
+    translation: "규율의 고통은 후회의 고통보다 훨씬 적다.",
+    author: "Anonymous",
+  },
+  {
+    text: "Every accomplishment starts with the decision to try.",
+    translation: "모든 성취는 시도하기로 결정하는 것에서 시작된다.",
+    author: "Anonymous",
+  },
+  {
+    text: "Success is not in what you have, but who you are.",
+    translation: "성공은 당신이 가진 것이 아니라, 당신이 누구인가에 있다.",
+    author: "Bo Bennett",
+  },
+  {
+    text: "Fall seven times, stand up eight.",
+    translation: "일곱 번 넘어져도, 여덟 번 일어나라.",
+    author: "Japanese Proverb",
+  },
+  {
+    text: "Your attitude determines your direction.",
+    translation: "당신의 태도가 당신의 방향을 결정한다.",
+    author: "Anonymous",
+  },
+  {
+    text: "Challenge yourself, it's the only path which leads to growth.",
+    translation: "자신에게 도전하라, 그것만이 성장으로 이어지는 유일한 길이다.",
+    author: "Morgan Freeman",
+  },
+  {
+    text: "The man who moves a mountain begins by carrying away small stones.",
+    translation: "산을 옮기는 사람은 작은 돌을 나르는 것으로 시작한다.",
+    author: "Confucius",
+  },
+  {
+    text: "The pessimist sees difficulty in every opportunity. The optimist sees opportunity in every difficulty.",
+    translation:
+      "비관주의자는 모든 기회에서 어려움을 보고, 낙관주의자는 모든 어려움에서 기회를 본다.",
+    author: "Winston Churchill",
+  },
+  {
+    text: "When you feel like quitting, remember why you started.",
+    translation: "포기하고 싶을 때, 왜 시작했는지 기억하라.",
+    author: "Anonymous",
+  },
+  {
+    text: "You don't have to be extreme, just consistent.",
+    translation: "극단적일 필요는 없다, 단지 일관성 있으면 된다.",
+    author: "Anonymous",
+  },
+  {
+    text: "Don't wish it were easier. Wish you were better.",
+    translation: "더 쉽기를 바라지 말고, 당신이 더 나아지기를 바라라.",
+    author: "Jim Rohn",
+  },
+  {
+    text: "You are the master of your destiny. You can influence, direct and control your own environment.",
+    translation:
+      "당신은 자신의 운명의 주인이다. 당신은 자신의 환경을 영향력 있게 하고, 지시하고, 통제할 수 있다.",
+    author: "Napoleon Hill",
+  },
+  {
+    text: "Life is 10% what happens to us and 90% how we react to it.",
+    translation:
+      "인생은 우리에게 일어나는 일이 10%이고, 우리가 그것에 어떻게 반응하는가가 90%이다.",
+    author: "Charles R. Swindoll",
+  },
+  {
+    text: "If it is important to you, you will find a way. If not, you'll find an excuse.",
+    translation:
+      "당신에게 중요하다면, 방법을 찾을 것이다. 그렇지 않다면, 변명을 찾을 것이다.",
+    author: "Anonymous",
+  },
+  {
+    text: "The best way to predict the future is to create it.",
+    translation: "미래를 예측하는 가장 좋은 방법은 그것을 창조하는 것이다.",
+    author: "Abraham Lincoln",
+  },
+  {
+    text: "Great things never came from comfort zones.",
+    translation: "위대한 것들은 결코 편안한 구역에서 나오지 않는다.",
+    author: "Anonymous",
+  },
+  {
+    text: "It's not the load that breaks you down, it's the way you carry it.",
+    translation:
+      "당신을 무너뜨리는 것은 짐이 아니라, 그것을 짊어지는 방식이다.",
+    author: "Lou Holtz",
+  },
+  {
+    text: "Don't be pushed around by the fears in your mind. Be led by the dreams in your heart.",
+    translation: "마음속의 두려움에 휘둘리지 마라. 가슴속의 꿈에 이끌려라.",
+    author: "Roy T. Bennett",
+  },
+  {
+    text: "Every morning you have two choices: continue to sleep with your dreams, or wake up and chase them.",
+    translation:
+      "매일 아침 두 가지 선택이 있다: 꿈과 함께 계속 자거나, 일어나서 그것들을 쫓는 것이다.",
+    author: "Anonymous",
+  },
+  {
+    text: "The only way to achieve the impossible is to believe it is possible.",
+    translation:
+      "불가능을 달성하는 유일한 방법은 그것이 가능하다고 믿는 것이다.",
+    author: "Charles Kingsleigh",
+  },
+  {
+    text: "Your task is not to seek for love, but merely to seek and find all the barriers within yourself that you have built against it.",
+    translation:
+      "당신의 과제는 사랑을 찾는 것이 아니라, 단지 당신이 그것에 대해 세운, 당신 안의 모든 장벽을 찾고 발견하는 것이다.",
+    author: "Rumi",
+  },
+  {
+    text: "Do one thing every day that scares you.",
+    translation: "매일 당신을 두렵게 하는 한 가지 일을 하라.",
+    author: "Eleanor Roosevelt",
+  },
+  {
+    text: "What we fear doing most is usually what we most need to do.",
+    translation:
+      "우리가 가장 두려워하는 일이 보통 우리가 가장 필요로 하는 일이다.",
+    author: "Tim Ferriss",
+  },
+  {
+    text: "Failure is simply the opportunity to begin again, this time more intelligently.",
+    translation: "실패는 단순히 다시 시작할 기회이다, 이번에는 더 지혜롭게.",
+    author: "Henry Ford",
+  },
+  {
+    text: "The struggle you're in today is developing the strength you need for tomorrow.",
+    translation: "오늘의 투쟁은 내일을 위해 필요한 힘을 개발하고 있다.",
+    author: "Anonymous",
+  },
+  {
+    text: "Don't wait. The time will never be just right.",
+    translation: "기다리지 마라. 때는 결코 딱 맞지 않을 것이다.",
+    author: "Napoleon Hill",
+  },
+  {
+    text: "Your life does not get better by chance, it gets better by change.",
+    translation: "당신의 삶은 우연히 나아지지 않는다, 변화에 의해 나아진다.",
+    author: "Jim Rohn",
+  },
+  {
+    text: "The biggest adventure you can take is to live the life of your dreams.",
+    translation:
+      "당신이 할 수 있는 가장 큰 모험은 당신이 꿈꾸는 삶을 사는 것이다.",
+    author: "Oprah Winfrey",
+  },
+  {
+    text: "Never give up on a dream just because of the time it will take to accomplish it. The time will pass anyway.",
+    translation:
+      "꿈을 이루는 데 시간이 걸린다는 이유로 포기하지 마라. 어차피 시간은 흐를 것이다.",
+    author: "Earl Nightingale",
+  },
+  {
+    text: "The future depends on what you do today.",
+    translation: "미래는 오늘 당신이 무엇을 하느냐에 달려있다.",
+    author: "Mahatma Gandhi",
+  },
+  {
+    text: "Twenty years from now you will be more disappointed by the things you didn't do than by the ones you did do.",
+    translation:
+      "20년 후에 당신은 했던 일보다 하지 않았던 일들로 인해 더 실망할 것이다.",
+    author: "Mark Twain",
+  },
 ];
 
 // 오늘의 명언을 가져오는 함수
