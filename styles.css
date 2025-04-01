@@ -777,8 +777,7 @@ footer {
 
 /* 주간 통계 탭 스타일 */
 .weekly-stats-container,
-.monthly-stats-container,
-.hall-of-fame-container {
+.monthly-stats-container {
   padding: 20px;
 }
 
@@ -1831,3 +1830,5 @@ tr:hover {
     font-size: 0.85em;
   }
 }
+
+@import "styles/hall-of-fame.css";
