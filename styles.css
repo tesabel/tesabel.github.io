@@ -669,10 +669,13 @@ footer {
 }
 
 .stats-card h3 {
-  margin-top: 0;
+  margin: 0 0 15px 0;
   color: #333;
-  border-bottom: 2px solid #4caf50;
+  font-size: 1.2em;
+  font-weight: 600;
   padding-bottom: 10px;
+  border-bottom: 2px solid #4caf50;
+  text-align: left;
 }
 
 .calendar-view {
@@ -707,14 +710,51 @@ footer {
   border: 2px solid #4caf50;
 }
 
-.best-records,
+.best-records {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.record-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.record-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.record-label {
+  color: #555;
+  font-size: 0.95em;
+  font-weight: 500;
+}
+
+.record-value {
+  font-weight: 600;
+  color: #4caf50;
+  font-size: 1.05em;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60%;
+}
+
 .streak-info {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
-.record-item,
 .streak-item {
   display: flex;
   justify-content: space-between;
@@ -724,12 +764,10 @@ footer {
   border-radius: 4px;
 }
 
-.record-label,
 .streak-label {
   color: #666;
 }
 
-.record-value,
 .streak-value {
   font-weight: bold;
   color: #4caf50;
@@ -1031,16 +1069,6 @@ footer {
   font-weight: bold;
   color: #333;
   margin-bottom: 3px;
-  width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.record-value {
-  font-size: 1.1em;
-  font-weight: bold;
-  color: #4caf50;
   width: 100%;
   white-space: nowrap;
   overflow: hidden;
