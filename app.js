@@ -14,8 +14,8 @@ const SCORE_CONFIG = {
   },
   spending: {
     baseScore: 110, // 기본 점수 (0원 지출시)
-    targetAmount: 50000, // 원, 0점이 되는 목표 지출
-    pointsPer1000Won: 1, // 1000원당 감소하는 점수
+    targetAmount: 30000, // 원, 0점이 되는 목표 지출
+    pointsPer1000Won: 3, // 1000원당 감소하는 점수
     weight: 0.3, // 총점수에서 차지하는 비율
   },
 };
