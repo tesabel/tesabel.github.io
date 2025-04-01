@@ -2248,6 +2248,27 @@ function updateCalendarView(calendarId, dataType, unit) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
+  // 마지막 업데이트 날짜 계산
+  const sortedData = [...lifeData].sort((a, b) => {
+    const dateA = parseDate(a.date);
+    const dateB = parseDate(b.date);
+    return dateB - dateA; // 내림차순 정렬
+  });
+
+  // 데이터가 있는 마지막 날짜 찾기
+  const lastUpdateItem = sortedData.find(
+    (item) =>
+      item.cardioDistance > 0 ||
+      item.cardioMinute > 0 ||
+      item.strengthTrainingMinutes > 0 ||
+      item.spendMoney > 0
+  );
+
+  const lastUpdateDate = lastUpdateItem ? parseDate(lastUpdateItem.date) : null;
+  if (lastUpdateDate) {
+    lastUpdateDate.setHours(0, 0, 0, 0);
+  }
+
   // 데이터 범위 계산
   let maxValue = 0;
   const monthData = [];
@@ -2268,7 +2289,12 @@ function updateCalendarView(calendarId, dataType, unit) {
     let value = 0;
     if (dayItem) {
       if (dataType === "score") {
-        value = calculateTotalScore(dayItem);
+        // 총점 캘린더의 경우 마지막 업데이트 날짜 이후의 점수는 표시하지 않음
+        if (lastUpdateDate && date > lastUpdateDate) {
+          value = 0;
+        } else {
+          value = calculateTotalScore(dayItem);
+        }
       } else {
         value = dayItem[dataType] || 0;
       }
@@ -2689,7 +2715,9 @@ function updateAchievements() {
       if (achievementDate) {
         achievementCardStrength100.querySelector(
           ".achievement-date"
-        ).textContent = `달성일: ${formatDateKorean(parseDate(achievementDate))}`;
+        ).textContent = `달성일: ${formatDateKorean(
+          parseDate(achievementDate)
+        )}`;
       }
     }
   } else {
